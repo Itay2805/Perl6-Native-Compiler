@@ -1,7 +1,25 @@
-#Perl6 Native Compiler
+# Perl6 Native Compiler
 
 Currently this is very basics and supports only basic variables.
 
-Also type checking on variables with declared types (`my <type> $<name>`). This is because this does not supports Classes and Enums (whic are the only two types in the language).
+## How to use:
+Currently the file name is built into the program and the output is printed into the console.
+To compile the generated ASM file I use the build file (shell)
 
-After support for subroutines there will be support for enums. Than there will probably be support for classes.
+	$ ./build [file-name].asm 
+
+This will generate the .O file and the excuteable
+
+## Supports:
+	- Variables (including compiler type checking)
+	- The say subroutine(works both with and without '(' / ')')
+	- 3 Basic types, 
+		    * Any (Variables with unknown type are set to it automatically)
+		    * int (integer)
+		    * str (string)
+		
+## Under Development:
+    * Subroutines
+    * Math
+    * classes (Object Oriented Perl)
+    
