@@ -5,7 +5,8 @@ public class Variable {
 	public int position;
 	public int size;
 	public boolean pointer;
-	public final Type type;
+	public Type type;
+	public boolean dynamicType = true;
 	
 	public Variable(Type type, int size, int position, boolean pointer) {
 		this(type);

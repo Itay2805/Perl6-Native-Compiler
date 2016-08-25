@@ -7,14 +7,19 @@ import com.itay.perl6.compiler.vars.Type;
 import com.itay.perl6.compiler.vars.Variable;
 import com.itay.perl6.compiler.vars.VariableLookupTable;
 import com.itay.perl6.parser.Perl6BaseVisitor;
+import com.itay.perl6.parser.Perl6Parser.AddContext;
 import com.itay.perl6.parser.Perl6Parser.AssignVarContext;
 import com.itay.perl6.parser.Perl6Parser.CodeBlockContext;
 import com.itay.perl6.parser.Perl6Parser.CreateVarContext;
+import com.itay.perl6.parser.Perl6Parser.DivContext;
 import com.itay.perl6.parser.Perl6Parser.LoadVarContext;
+import com.itay.perl6.parser.Perl6Parser.MathExprContext;
+import com.itay.perl6.parser.Perl6Parser.MulContext;
 import com.itay.perl6.parser.Perl6Parser.NumberLiteralContext;
 import com.itay.perl6.parser.Perl6Parser.ProgramContext;
 import com.itay.perl6.parser.Perl6Parser.SayContext;
 import com.itay.perl6.parser.Perl6Parser.StringLiteralContext;
+import com.itay.perl6.parser.Perl6Parser.SubContext;
 import com.itay.perl6.util.Pair;
 
 public class Visitor extends Perl6BaseVisitor<Pair<Type, String>> {
@@ -38,20 +43,24 @@ public class Visitor extends Perl6BaseVisitor<Pair<Type, String>> {
 		code += "	xor rax, rax\n";
 		code += "	ret\n"; // TODO: Maybe call exit
 		code += "[section rodata]\n";
-		code += "num_fmt:\n";
+		code += "num_fmt_line:\n";
 		code += "	db \"%d\", 10, 0\n";
-		code += "str_fmt:\n";
+		code += "str_fmt_line:\n";
 		code += "	db \"%s\", 10, 0\n";
+		code += "num_fmt:\n";
+		code += "	db \"%d\", 0\n";
+		code += "str_fmt:\n";
+		code += "	db \"%s\", 0\n";
 		for(Entry<String, String> string : strings.entrySet()) {
 			code += string.getKey() + ":\n";
+			code += "	dq " + string.getValue().length() + "\n";
 			code += "	db \"" + escape(string.getValue()) + "\", 0\n";
 		}
 		return Pair.of(Type.NONE, code);
 	}
 	
 	private String escape(String str) {
-		return str	.replace("\n", "\", 10, \"")
-					.replace("\\n", "\", 10, \"");
+		return str.replace(System.getProperty("line.separator"), "\", 10, \"").replace("\\n", "\", 10, \"");
 	}
 	
 	public Pair<Type, String> visitCreateVar(CreateVarContext ctx) {
@@ -91,11 +100,16 @@ public class Visitor extends Perl6BaseVisitor<Pair<Type, String>> {
 		String name = ctx.name.getText();
 		Pair<Type, String> pair = visit(ctx.value);
 		Variable var = VariableLookupTable.get(name);
-		if(var.type != pair.getFirst() || var.type != Type.ANY) {
-			System.out.println("Visitor.visitCreateVar()");
-			System.err.println("Can not assign value from type " + pair.getFirst() + " to variable of type " + var.type + "(" + name + ")");
-			System.exit(1);
+		if(var.type != Type.ANY && !var.dynamicType) {
+			if(var.type != pair.getFirst()) {
+				System.out.println("Visitor.visitCreateVar()");
+				System.err.println("Can not assign value from type " + pair.getFirst() + " to variable of type " + var.type + "(" + name + ")");
+				System.exit(1);
+			}
+		}else {
+			var.type = pair.getFirst();
 		}
+		code += pair.getSecond();
 		code += "	mov qword [rbp - " + var.position + "], rax\n";
 		return Pair.of(var.type, code);
 	}
@@ -112,7 +126,7 @@ public class Visitor extends Perl6BaseVisitor<Pair<Type, String>> {
 		String code = "";
 		VariableLookupTable.pushBlock();
 		Pair<Type, String> pair = visitChildren(ctx);
-		int size = VariableLookupTable.getBlockSizes().get(VariableLookupTable.getBlock());
+		int size =  VariableLookupTable.getTotalSize() - VariableLookupTable.getBlockSizes().get(VariableLookupTable.getBlock() - 1);
 		code += "	sub rsp, " + size + "\n";
 		code += pair.getSecond();
 		code += "	add rsp, " + size + "\n";
@@ -127,7 +141,13 @@ public class Visitor extends Perl6BaseVisitor<Pair<Type, String>> {
 	}
 	
 	public Pair<Type, String> visitStringLiteral(StringLiteralContext ctx) {
-		String str = ctx.str.getText().substring(1, ctx.str.getText().length() - 1);
+		String str = ctx.str.getText();
+		if(str.startsWith("'") || str.startsWith("\"")) {
+			str = str.substring(1, ctx.str.getText().length() - 1);
+		}else if(str.startsWith("q")) {
+			str = str.substring(2, ctx.str.getText().length() - 1);
+		}
+		
 		String label = "generated_string_" + count++;
 		strings.put(label, str);
 		String code = "	mov rax, " + label + "\n";
@@ -136,20 +156,145 @@ public class Visitor extends Perl6BaseVisitor<Pair<Type, String>> {
 	
 	public Pair<Type, String> visitSay(SayContext ctx) {
 		String code = "";
+		String name = ctx.name.getText();
 		Pair<Type, String> pair = visit(ctx.value);
 		code += pair.getSecond();
-		code += "	mov rsi, rax\n";
 		if(pair.getFirst() == Type.STR) {
-			code += "	mov rdi, str_fmt\n";
+			code += "	lea rsi, [rax + 8]\n";
+			code += "	mov rdi, " + (name.equals("say") ? "str_fmt_line" : "str_fmt") + "\n";
 		}else {
-			code += "	mov rdi, num_fmt\n";
+			code += "	mov rsi, rax\n";
+			code += "	mov rdi, " + (name.equals("say") ? "num_fmt_line" : "num_fmt") + "\n";
 		}
 		code += "	xor ax, ax\n";
 		code += "	call printf\n";
 		return Pair.of(Type.NONE, code);
 	}
+	
+	public Pair<Type, String> visitMathExpr(MathExprContext ctx) {
+		Pair<Type, String> pair = visitChildren(ctx);
+		if(pair.getFirst() != Type.INT) {
+			System.out.println("Visitor.visitMathExpr()");
+			System.err.println("The expression: " + ctx.getText() + " does not return a INT but a " + pair.getFirst());
+			System.exit(1);
+		}
+		return pair;
+	}
+	
+	public Pair<Type, String> visitAdd(AddContext ctx) {
+		String code = "";
+		if(ctx.getChildCount() >= 3) {
+			Pair<Type, String> first = visit(ctx.getChild(0));
+			Pair<Type, String> second = visit(ctx.getChild(2));
+			code += second.getSecond();
+			code += "	mov rbx, rax\n";
+			code += "	push rbx\n";
+			code += first.getSecond();
+			code += "	pop rbx\n";
+			code += "	add rax, rbx\n";
+			for(int i = 4; i < ctx.getChildCount(); i += 2) {
+				code += "	mov rbx, rax\n";
+				code += "	push rbx\n";
+				second = visit(ctx.getChild(i));
+				code += second.getSecond();
+				code += "	pop rbx\n";
+				code += "	add rbx, rax\n";
+				if(i + 2 >= ctx.getChildCount()) code += "	mov rax, rbx\n";
+			}
+		}else {
+			Pair<Type, String> first = visit(ctx.getChild(0));
+			code += first.getSecond();
+		}
+		return Pair.of(Type.INT, code);
+	}
+	
+	public Pair<Type, String> visitSub(SubContext ctx) {
+		String code = "";
+		if(ctx.getChildCount() >= 3) {
+			Pair<Type, String> first = visit(ctx.getChild(0));
+			Pair<Type, String> second = visit(ctx.getChild(2));
+			code += second.getSecond();
+			code += "	mov rbx, rax\n";
+			code += "	push rbx\n";
+			code += first.getSecond();
+			code += "	pop rbx\n";
+			code += "	sub rax, rbx\n";
+			for(int i = 4; i < ctx.getChildCount(); i += 2) {
+				code += "	mov rbx, rax\n";
+				code += "	push rbx\n";
+				second = visit(ctx.getChild(i));
+				code += second.getSecond();
+				code += "	pop rbx\n";
+				code += "	sub rbx, rax\n";
+				if(i + 2 >= ctx.getChildCount()) code += "	mov rax, rbx\n";
+			}
+		}else {
+			Pair<Type, String> first = visit(ctx.getChild(0));
+			code += first.getSecond();
+		}
+		return Pair.of(Type.INT, code);
+	}
+	
+	public Pair<Type, String> visitMul(MulContext ctx) {
+		String code = "";
+		if(ctx.getChildCount() >= 3) {
+			Pair<Type, String> first = visit(ctx.getChild(0));
+			Pair<Type, String> second = visit(ctx.getChild(2));
+			code += second.getSecond();
+			code += "	mov rbx, rax\n";
+			code += "	push rbx\n";
+			code += first.getSecond();
+			code += "	pop rbx\n";
+			code += "	imul rax, rbx\n";
+			for(int i = 4; i < ctx.getChildCount(); i += 2) {
+				second = visit(ctx.getChild(i));
+				code += "	mov rbx, rax\n";
+				code += "	push rbx\n";
+				code += second.getSecond();
+				code += "	pop rbx\n";
+				code += "	imul rbx, rax\n";
+				if(i + 2 >= ctx.getChildCount()) code += "	mov rax, rbx\n";
+			}
+		}else {
+			Pair<Type, String> first = visit(ctx.getChild(0));
+			code += first.getSecond();
+		}
+		return Pair.of(Type.INT, code);
+	}
+	
+	public Pair<Type, String> visitDiv(DivContext ctx) {
+		String code = "";
+		if(ctx.getChildCount() >= 3) {
+			Pair<Type, String> first = visit(ctx.getChild(0));
+			Pair<Type, String> second = visit(ctx.getChild(2));
+			code += second.getSecond();
+			code += "	mov rbx, rax\n";
+			code += "	push rbx\n";
+			code += first.getSecond();
+			code += "	pop rbx\n";
+			code += "	xor rdx, rdx\n";
+			code += "	idiv rbx\n";
+			for(int i = 4; i < ctx.getChildCount(); i += 2) {
+				code += "	mov rbx, rax\n";
+				code += "	push rbx\n";
+				second = visit(ctx.getChild(i));
+				code += second.getSecond();
+				code += "	pop rbx\n";
+				code += "	xchg rax, rbx\n";
+				code += "	xor rdx, rdx\n";
+				code += "	idiv rbx\n";
+			}
+		}else {
+			Pair<Type, String> first = visit(ctx.getChild(0));
+			code += first.getSecond();
+		}
+		return Pair.of(Type.INT, code);
+	}
 
 	protected Pair<Type, String> aggregateResult(Pair<Type, String> aggregate, Pair<Type, String> nextResult) {
+		if(aggregate == null && nextResult == null) {
+			return Pair.of(Type.NONE, "");
+		}
 		if(aggregate == null) {
 			return nextResult;
 		}

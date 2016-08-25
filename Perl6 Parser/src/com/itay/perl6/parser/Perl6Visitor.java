@@ -14,15 +14,63 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface Perl6Visitor<T> extends ParseTreeVisitor<T> {
 	/**
+	 * Visit a parse tree produced by the {@code add}
+	 * labeled alternative in {@link Perl6Parser#addingExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAdd(@NotNull Perl6Parser.AddContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code createVar}
-	 * labeled alternative in {@link Perl6Parser#expr}.
+	 * labeled alternative in {@link Perl6Parser#varExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCreateVar(@NotNull Perl6Parser.CreateVarContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code sub}
+	 * labeled alternative in {@link Perl6Parser#addingExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSub(@NotNull Perl6Parser.SubContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mul}
+	 * labeled alternative in {@link Perl6Parser#multiplyingExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMul(@NotNull Perl6Parser.MulContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code use}
+	 * labeled alternative in {@link Perl6Parser#temp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUse(@NotNull Perl6Parser.UseContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code say}
+	 * labeled alternative in {@link Perl6Parser#temp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSay(@NotNull Perl6Parser.SayContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Perl6Parser#program}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProgram(@NotNull Perl6Parser.ProgramContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code div}
+	 * labeled alternative in {@link Perl6Parser#multiplyingExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDiv(@NotNull Perl6Parser.DivContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code loadVar}
-	 * labeled alternative in {@link Perl6Parser#expr}.
+	 * labeled alternative in {@link Perl6Parser#varExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -34,33 +82,38 @@ public interface Perl6Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpr_list(@NotNull Perl6Parser.Expr_listContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code assignVar}
-	 * labeled alternative in {@link Perl6Parser#expr}.
+	 * Visit a parse tree produced by {@link Perl6Parser#mathExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAssignVar(@NotNull Perl6Parser.AssignVarContext ctx);
+	T visitMathExpr(@NotNull Perl6Parser.MathExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code stringLiteral}
-	 * labeled alternative in {@link Perl6Parser#expr}.
+	 * labeled alternative in {@link Perl6Parser#literalExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitStringLiteral(@NotNull Perl6Parser.StringLiteralContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code assignVar}
+	 * labeled alternative in {@link Perl6Parser#varExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssignVar(@NotNull Perl6Parser.AssignVarContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code codeBlock}
-	 * labeled alternative in {@link Perl6Parser#expr}.
+	 * labeled alternative in {@link Perl6Parser#temp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCodeBlock(@NotNull Perl6Parser.CodeBlockContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code say}
-	 * labeled alternative in {@link Perl6Parser#expr}.
+	 * Visit a parse tree produced by {@link Perl6Parser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSay(@NotNull Perl6Parser.SayContext ctx);
+	T visitExpr(@NotNull Perl6Parser.ExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Perl6Parser#block}.
 	 * @param ctx the parse tree
@@ -68,14 +121,8 @@ public interface Perl6Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlock(@NotNull Perl6Parser.BlockContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Perl6Parser#program}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitProgram(@NotNull Perl6Parser.ProgramContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code numberLiteral}
-	 * labeled alternative in {@link Perl6Parser#expr}.
+	 * labeled alternative in {@link Perl6Parser#literalExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
