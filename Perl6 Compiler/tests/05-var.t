@@ -7,13 +7,11 @@ my $o1 = 'ok 1'; say $o1;
 
 my $o2; $o2 = 'ok 2'; say $o2;
 
-my $a = 3; print 'ok '; say $a;
+my $a = 3; say 'ok ', $a;
 
 my $b; $b = 4; print 'ok '; say $b;
 
 #our $x = 5;  say 'ok ', $x;
-
-#{ my $x = 6; print 'ok '; say $x; };
 
 { my $x = 5; print 'ok '; say $x; };
 

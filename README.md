@@ -19,7 +19,7 @@ they are located in `Perl6 Compiler/tests/*.t` and the compiled ASM files are lo
 - The say and print subroutine(works both with and without '(' / ')') (currently accepts only one param)
 - 3 Basic types, 
     * Any (Variables with unknown type are set to it automatically)
-    * int (integer)
+    * int (integer) -> Supports normal numbers(0, 457), decimals (0d457), octa (0o75), hex (0x5F), binary (0b1001). (all of them can have '_'). Also strings wich has a number definition are compiled as a number (In the future this will be dynamic in runtime so strings which are created in runtime that can represent a number can be used as a number)
     * str (string)
 - Math (addition, subtraction, multiplication and division)
 - Code blocks
@@ -37,6 +37,8 @@ they are located in `Perl6 Compiler/tests/*.t` and the compiled ASM files are lo
 	#6
 	#5
 	```
-	
-## Notes:
-right now you *MUST* put ';' (Semi Colon) in the end of every statement (including blocks), In the future this won't be needed.
+
+## In Progress:
+- Subroutines (Already have a basic grammar but have to rethink the implementation)
+- Bool and all the comparation operands (>, >=, ==, <=, <, etc...)
+- Loops and If/Unless blocks

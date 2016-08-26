@@ -65,4 +65,8 @@ public class VariableLookupTable {
 		return table.get(block).get(name);
 	}
 	
+	public static void setBlock(int block) {
+		VariableLookupTable.block = block;
+	}
+	
 }

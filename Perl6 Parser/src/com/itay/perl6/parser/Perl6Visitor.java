@@ -76,12 +76,6 @@ public interface Perl6Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLoadVar(@NotNull Perl6Parser.LoadVarContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Perl6Parser#expr_list}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpr_list(@NotNull Perl6Parser.Expr_listContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link Perl6Parser#mathExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -109,6 +103,12 @@ public interface Perl6Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCodeBlock(@NotNull Perl6Parser.CodeBlockContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link Perl6Parser#stmt_list}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt_list(@NotNull Perl6Parser.Stmt_listContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Perl6Parser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -120,6 +120,12 @@ public interface Perl6Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBlock(@NotNull Perl6Parser.BlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Perl6Parser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt(@NotNull Perl6Parser.StmtContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code numberLiteral}
 	 * labeled alternative in {@link Perl6Parser#literalExpr}.

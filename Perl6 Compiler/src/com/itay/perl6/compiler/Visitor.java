@@ -3,6 +3,7 @@ package com.itay.perl6.compiler;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.itay.perl6.compiler.subs.SubsLookupTable;
 import com.itay.perl6.compiler.vars.Type;
 import com.itay.perl6.compiler.vars.Variable;
 import com.itay.perl6.compiler.vars.VariableLookupTable;
@@ -125,19 +126,38 @@ public class Visitor extends Perl6BaseVisitor<Pair<Type, String>> {
 	public Pair<Type, String> visitCodeBlock(CodeBlockContext ctx) {
 		String code = "";
 		VariableLookupTable.pushBlock();
+		SubsLookupTable.pushBlock();
 		Pair<Type, String> pair = visitChildren(ctx);
 		int size =  VariableLookupTable.getTotalSize() - VariableLookupTable.getBlockSizes().get(VariableLookupTable.getBlock() - 1);
 		code += "	sub rsp, " + size + "\n";
 		code += pair.getSecond();
 		code += "	add rsp, " + size + "\n";
+		SubsLookupTable.popBlock();
 		VariableLookupTable.popBlock();
 		return Pair.of(Type.NONE, code);
 	}
 	
+	// TODO: rethink about subs and the memory usage
+	/*public Pair<Type, String> visitSubCreate(SubCreateContext ctx) {
+		String code = "";
+		String start = "sub_" + SubsLookupTable.getBlock() + "_" + ctx.name.getText();
+		String end = "sub_end_" + SubsLookupTable.getBlock() + "_" + ctx.name.getText();
+		code += "	jmp " + end + "\n";
+		code += start + ":\n";
+		Pair<Type, String> pair = visit(ctx.code);
+		code += pair.getSecond();
+		code += "	mov rax, " + start + "\n";
+		code += end + ":\n";
+		Subroutine sub = new Subroutine();
+		sub.block = SubsLookupTable.getBlock();
+		sub.returnType = pair.getFirst();
+		return Pair.of(Type.INT, code);
+	}*/
+	
 	public Pair<Type, String> visitNumberLiteral(NumberLiteralContext ctx) {
-		String number = "0x" + Integer.toHexString(Integer.parseInt(ctx.num.getText()));
-		
-		return Pair.of(Type.INT, "	mov rax, " + number + "\n");
+		String num = ctx.num.getText().replace("_", "");
+		num = attemptParseInt(num);
+		return Pair.of(Type.INT, "	mov rax, " + num + "\n");
 	}
 	
 	public Pair<Type, String> visitStringLiteral(StringLiteralContext ctx) {
@@ -148,26 +168,59 @@ public class Visitor extends Perl6BaseVisitor<Pair<Type, String>> {
 			str = str.substring(2, ctx.str.getText().length() - 1);
 		}
 		
-		String label = "generated_string_" + count++;
-		strings.put(label, str);
-		String code = "	mov rax, " + label + "\n";
-		return Pair.of(Type.STR, code);
+		String possibleNumber = attemptParseInt(str);
+		
+		if(possibleNumber == null) {
+			String label = "generated_string_" + count++;
+			strings.put(label, str);
+			String code = "	mov rax, " + label + "\n";
+			return Pair.of(Type.STR, code);			
+		}else {			
+			String code = "	mov rax, " + possibleNumber + "\n";
+			return Pair.of(Type.INT, code);
+		}
 	}
 	
 	public Pair<Type, String> visitSay(SayContext ctx) {
 		String code = "";
 		String name = ctx.name.getText();
-		Pair<Type, String> pair = visit(ctx.value);
-		code += pair.getSecond();
-		if(pair.getFirst() == Type.STR) {
-			code += "	lea rsi, [rax + 8]\n";
-			code += "	mov rdi, " + (name.equals("say") ? "str_fmt_line" : "str_fmt") + "\n";
-		}else {
-			code += "	mov rsi, rax\n";
-			code += "	mov rdi, " + (name.equals("say") ? "num_fmt_line" : "num_fmt") + "\n";
+		Pair<Type, String> pair = visit(ctx.value1);
+		
+		if(ctx.value2 != null) {
+			code += pair.getSecond();
+			if(pair.getFirst() == Type.STR) {
+				code += "	lea rsi, [rax + 8]\n";
+				code += "	mov rdi, str_fmt\n";
+			}else {
+				code += "	mov rsi, rax\n";
+				code += "	mov rdi, num_fmt\n";
+			}
+			code += "	xor ax, ax\n";
+			code += "	call printf\n";
+			
+			pair = visit(ctx.value2);
+			code += pair.getSecond();
+			if(pair.getFirst() == Type.STR) {
+				code += "	lea rsi, [rax + 8]\n";
+				code += "	mov rdi, " + (name.equals("say") ? "str_fmt_line" : "str_fmt") + "\n";
+			}else {
+				code += "	mov rsi, rax\n";
+				code += "	mov rdi, " + (name.equals("say") ? "num_fmt_line" : "num_fmt") + "\n";
+			}
+		}else {			
+			code += pair.getSecond();
+			if(pair.getFirst() == Type.STR) {
+				code += "	lea rsi, [rax + 8]\n";
+				code += "	mov rdi, " + (name.equals("say") ? "str_fmt_line" : "str_fmt") + "\n";
+			}else {
+				code += "	mov rsi, rax\n";
+				code += "	mov rdi, " + (name.equals("say") ? "num_fmt_line" : "num_fmt") + "\n";
+			}
 		}
+		
 		code += "	xor ax, ax\n";
 		code += "	call printf\n";
+		
 		return Pair.of(Type.NONE, code);
 	}
 	
@@ -304,6 +357,37 @@ public class Visitor extends Perl6BaseVisitor<Pair<Type, String>> {
 			String code = aggregate.getSecond() + nextResult.getSecond();
 			Type type = nextResult.getFirst();
 			return Pair.of(type, code);
+		}
+	}
+	
+	private String attemptParseInt(String num) {
+		if(num.startsWith("'")) {
+			num = num.substring(1, num.length() - 1);
+		}
+		num = num.replace("_", "");
+		if(num.startsWith("0x")) {
+			num = num.substring(2);
+			num = Integer.toHexString(Integer.valueOf(num, 16));
+			return "0x" + num;
+		}else if(num.startsWith("0o")) {
+			num = num.substring(2);
+			num = Integer.toHexString(Integer.valueOf(num, 8));
+			return "0x" + num;
+		}else if(num.startsWith("0b")) {
+			num = num.substring(2);
+			num = Integer.toHexString(Integer.valueOf(num, 2));
+			return "0x" + num;
+		}else if(num.startsWith("0d")) {
+			num = num.substring(2);
+			num = Integer.toHexString(Integer.valueOf(num, 10));
+			return "0x" + num;
+		}else {
+			try {
+				num = Integer.toHexString(Integer.valueOf(num, 10));				
+				return "0x" + num;
+			}catch(Exception e) {
+				return null;
+			}
 		}
 	}
 	

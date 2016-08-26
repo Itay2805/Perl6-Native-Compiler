@@ -19,22 +19,23 @@ public class Perl6Parser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__15=1, T__14=2, T__13=3, T__12=4, T__11=5, T__10=6, T__9=7, T__8=8, 
-		T__7=9, T__6=10, T__5=11, T__4=12, T__3=13, T__2=14, T__1=15, T__0=16, 
-		CHARSEQUENSE=17, CHARSEQUENSE_2=18, CHARSEQUENSE_Q=19, NUMBER=20, ID=21, 
-		LINE_COMMENT=22, SPACE=23;
+		T__17=1, T__16=2, T__15=3, T__14=4, T__13=5, T__12=6, T__11=7, T__10=8, 
+		T__9=9, T__8=10, T__7=11, T__6=12, T__5=13, T__4=14, T__3=15, T__2=16, 
+		T__1=17, T__0=18, CHARSEQUENSE=19, CHARSEQUENSE_2=20, CHARSEQUENSE_Q=21, 
+		NUMBER=22, ID=23, LINE_COMMENT=24, SPACE=25;
 	public static final String[] tokenNames = {
 		"<INVALID>", "'/'", "'use'", "'say'", "'{'", "'v6'", "';'", "'}'", "'='", 
-		"'$'", "'print'", "'my'", "'('", "')'", "'*'", "'+'", "'-'", "CHARSEQUENSE", 
-		"CHARSEQUENSE_2", "CHARSEQUENSE_Q", "NUMBER", "ID", "LINE_COMMENT", "SPACE"
+		"'$'", "'print'", "'my'", "'''", "'('", "')'", "'*'", "'+'", "','", "'-'", 
+		"CHARSEQUENSE", "CHARSEQUENSE_2", "CHARSEQUENSE_Q", "NUMBER", "ID", "LINE_COMMENT", 
+		"SPACE"
 	};
 	public static final int
-		RULE_program = 0, RULE_expr_list = 1, RULE_expr = 2, RULE_temp = 3, RULE_literalExpr = 4, 
-		RULE_varExpr = 5, RULE_mathExpr = 6, RULE_multiplyingExpression = 7, RULE_addingExpression = 8, 
-		RULE_block = 9;
+		RULE_program = 0, RULE_stmt_list = 1, RULE_stmt = 2, RULE_expr = 3, RULE_temp = 4, 
+		RULE_literalExpr = 5, RULE_varExpr = 6, RULE_mathExpr = 7, RULE_multiplyingExpression = 8, 
+		RULE_addingExpression = 9, RULE_block = 10;
 	public static final String[] ruleNames = {
-		"program", "expr_list", "expr", "temp", "literalExpr", "varExpr", "mathExpr", 
-		"multiplyingExpression", "addingExpression", "block"
+		"program", "stmt_list", "stmt", "expr", "temp", "literalExpr", "varExpr", 
+		"mathExpr", "multiplyingExpression", "addingExpression", "block"
 	};
 
 	@Override
@@ -57,10 +58,10 @@ public class Perl6Parser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class ProgramContext extends ParserRuleContext {
-		public TerminalNode EOF() { return getToken(Perl6Parser.EOF, 0); }
-		public Expr_listContext expr_list() {
-			return getRuleContext(Expr_listContext.class,0);
+		public Stmt_listContext stmt_list() {
+			return getRuleContext(Stmt_listContext.class,0);
 		}
+		public TerminalNode EOF() { return getToken(Perl6Parser.EOF, 0); }
 		public ProgramContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -78,8 +79,8 @@ public class Perl6Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(20); expr_list();
-			setState(21); match(EOF);
+			setState(22); stmt_list();
+			setState(23); match(EOF);
 			}
 		}
 		catch (RecognitionException re) {
@@ -93,27 +94,27 @@ public class Perl6Parser extends Parser {
 		return _localctx;
 	}
 
-	public static class Expr_listContext extends ParserRuleContext {
-		public List<ExprContext> expr() {
-			return getRuleContexts(ExprContext.class);
+	public static class Stmt_listContext extends ParserRuleContext {
+		public StmtContext stmt(int i) {
+			return getRuleContext(StmtContext.class,i);
 		}
-		public ExprContext expr(int i) {
-			return getRuleContext(ExprContext.class,i);
+		public List<StmtContext> stmt() {
+			return getRuleContexts(StmtContext.class);
 		}
-		public Expr_listContext(ParserRuleContext parent, int invokingState) {
+		public Stmt_listContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_expr_list; }
+		@Override public int getRuleIndex() { return RULE_stmt_list; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Perl6Visitor ) return ((Perl6Visitor<? extends T>)visitor).visitExpr_list(this);
+			if ( visitor instanceof Perl6Visitor ) return ((Perl6Visitor<? extends T>)visitor).visitStmt_list(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Expr_listContext expr_list() throws RecognitionException {
-		Expr_listContext _localctx = new Expr_listContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_expr_list);
+	public final Stmt_listContext stmt_list() throws RecognitionException {
+		Stmt_listContext _localctx = new Stmt_listContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_stmt_list);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -121,17 +122,63 @@ public class Perl6Parser extends Parser {
 			setState(28);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__14) | (1L << T__13) | (1L << T__12) | (1L << T__7) | (1L << T__6) | (1L << T__5) | (1L << T__4) | (1L << CHARSEQUENSE) | (1L << CHARSEQUENSE_2) | (1L << CHARSEQUENSE_Q) | (1L << NUMBER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__16) | (1L << T__15) | (1L << T__14) | (1L << T__9) | (1L << T__8) | (1L << T__7) | (1L << T__6) | (1L << T__5) | (1L << CHARSEQUENSE) | (1L << CHARSEQUENSE_2) | (1L << CHARSEQUENSE_Q) | (1L << NUMBER))) != 0)) {
 				{
 				{
-				setState(23); expr();
-				setState(24); match(T__10);
+				setState(25); stmt();
 				}
 				}
 				setState(30);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class StmtContext extends ParserRuleContext {
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
+		public StmtContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_stmt; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Perl6Visitor ) return ((Perl6Visitor<? extends T>)visitor).visitStmt(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final StmtContext stmt() throws RecognitionException {
+		StmtContext _localctx = new StmtContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_stmt);
+		try {
+			setState(35);
+			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(31); expr();
+				setState(32); match(T__12);
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(34); expr();
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -171,32 +218,32 @@ public class Perl6Parser extends Parser {
 
 	public final ExprContext expr() throws RecognitionException {
 		ExprContext _localctx = new ExprContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_expr);
+		enterRule(_localctx, 6, RULE_expr);
 		try {
-			setState(35);
-			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
+			setState(41);
+			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(31); temp();
+				setState(37); temp();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(32); varExpr();
+				setState(38); varExpr();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(33); literalExpr();
+				setState(39); literalExpr();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(34); addingExpression();
+				setState(40); addingExpression();
 				}
 				break;
 			}
@@ -244,9 +291,13 @@ public class Perl6Parser extends Parser {
 	}
 	public static class SayContext extends TempContext {
 		public Token name;
-		public ExprContext value;
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public ExprContext value1;
+		public ExprContext value2;
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
 		}
 		public SayContext(TempContext ctx) { copyFrom(ctx); }
 		@Override
@@ -258,55 +309,73 @@ public class Perl6Parser extends Parser {
 
 	public final TempContext temp() throws RecognitionException {
 		TempContext _localctx = new TempContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_temp);
+		enterRule(_localctx, 8, RULE_temp);
 		int _la;
 		try {
-			setState(48);
+			int _alt;
+			setState(62);
 			switch (_input.LA(1)) {
-			case T__13:
-			case T__6:
+			case T__15:
+			case T__8:
 				_localctx = new SayContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(37);
+				setState(43);
 				((SayContext)_localctx).name = _input.LT(1);
 				_la = _input.LA(1);
-				if ( !(_la==T__13 || _la==T__6) ) {
+				if ( !(_la==T__15 || _la==T__8) ) {
 					((SayContext)_localctx).name = (Token)_errHandler.recoverInline(this);
 				}
 				consume();
-				setState(39);
-				switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
-				case 1:
-					{
-					setState(38); match(T__4);
-					}
-					break;
-				}
-				setState(41); ((SayContext)_localctx).value = expr();
-				setState(43);
+				setState(45);
 				switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
 				case 1:
 					{
-					setState(42); match(T__3);
+					setState(44); match(T__5);
+					}
+					break;
+				}
+				setState(47); ((SayContext)_localctx).value1 = expr();
+				setState(52);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,4,_ctx);
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+					if ( _alt==1 ) {
+						{
+						{
+						setState(48); match(T__1);
+						setState(49); ((SayContext)_localctx).value2 = expr();
+						}
+						} 
+					}
+					setState(54);
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input,4,_ctx);
+				}
+				setState(56);
+				switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
+				case 1:
+					{
+					setState(55); match(T__4);
 					}
 					break;
 				}
 				}
 				break;
-			case T__12:
+			case T__14:
 				_localctx = new CodeBlockContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(45); block();
+				setState(58); block();
 				}
 				break;
-			case T__14:
+			case T__16:
 				_localctx = new UseContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(46); match(T__14);
-				setState(47); match(T__11);
+				setState(59); match(T__16);
+				setState(60); match(T__13);
+				setState(61); match(T__12);
 				}
 				break;
 			default:
@@ -360,15 +429,32 @@ public class Perl6Parser extends Parser {
 
 	public final LiteralExprContext literalExpr() throws RecognitionException {
 		LiteralExprContext _localctx = new LiteralExprContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_literalExpr);
+		enterRule(_localctx, 10, RULE_literalExpr);
 		try {
-			setState(56);
+			setState(75);
 			switch (_input.LA(1)) {
+			case T__6:
 			case NUMBER:
 				_localctx = new NumberLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(50); ((NumberLiteralContext)_localctx).num = match(NUMBER);
+				setState(68);
+				switch (_input.LA(1)) {
+				case T__6:
+					{
+					setState(64); match(T__6);
+					setState(65); ((NumberLiteralContext)_localctx).num = match(NUMBER);
+					setState(66); match(T__6);
+					}
+					break;
+				case NUMBER:
+					{
+					setState(67); ((NumberLiteralContext)_localctx).num = match(NUMBER);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
 				}
 				break;
 			case CHARSEQUENSE:
@@ -377,21 +463,21 @@ public class Perl6Parser extends Parser {
 				_localctx = new StringLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(54);
+				setState(73);
 				switch (_input.LA(1)) {
 				case CHARSEQUENSE:
 					{
-					setState(51); ((StringLiteralContext)_localctx).str = match(CHARSEQUENSE);
+					setState(70); ((StringLiteralContext)_localctx).str = match(CHARSEQUENSE);
 					}
 					break;
 				case CHARSEQUENSE_Q:
 					{
-					setState(52); ((StringLiteralContext)_localctx).str = match(CHARSEQUENSE_Q);
+					setState(71); ((StringLiteralContext)_localctx).str = match(CHARSEQUENSE_Q);
 					}
 					break;
 				case CHARSEQUENSE_2:
 					{
-					setState(53); ((StringLiteralContext)_localctx).str = match(CHARSEQUENSE_2);
+					setState(72); ((StringLiteralContext)_localctx).str = match(CHARSEQUENSE_2);
 					}
 					break;
 				default:
@@ -470,68 +556,68 @@ public class Perl6Parser extends Parser {
 
 	public final VarExprContext varExpr() throws RecognitionException {
 		VarExprContext _localctx = new VarExprContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_varExpr);
+		enterRule(_localctx, 12, RULE_varExpr);
 		try {
-			setState(82);
-			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
+			setState(101);
+			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
 			case 1:
 				_localctx = new CreateVarContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(58); match(T__5);
-				setState(59); match(T__7);
-				setState(60); ((CreateVarContext)_localctx).name = match(ID);
+				setState(77); match(T__7);
+				setState(78); match(T__9);
+				setState(79); ((CreateVarContext)_localctx).name = match(ID);
 				}
 				break;
 			case 2:
 				_localctx = new CreateVarContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(61); match(T__5);
-				setState(62); match(T__7);
-				setState(63); ((CreateVarContext)_localctx).name = match(ID);
-				setState(64); match(T__8);
-				setState(65); ((CreateVarContext)_localctx).value = expr();
+				setState(80); match(T__7);
+				setState(81); match(T__9);
+				setState(82); ((CreateVarContext)_localctx).name = match(ID);
+				setState(83); match(T__10);
+				setState(84); ((CreateVarContext)_localctx).value = expr();
 				}
 				break;
 			case 3:
 				_localctx = new CreateVarContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(66); match(T__5);
-				setState(67); ((CreateVarContext)_localctx).type = match(ID);
-				setState(68); match(T__7);
-				setState(69); ((CreateVarContext)_localctx).name = match(ID);
+				setState(85); match(T__7);
+				setState(86); ((CreateVarContext)_localctx).type = match(ID);
+				setState(87); match(T__9);
+				setState(88); ((CreateVarContext)_localctx).name = match(ID);
 				}
 				break;
 			case 4:
 				_localctx = new CreateVarContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(70); match(T__5);
-				setState(71); ((CreateVarContext)_localctx).type = match(ID);
-				setState(72); match(T__7);
-				setState(73); ((CreateVarContext)_localctx).name = match(ID);
-				setState(74); match(T__8);
-				setState(75); ((CreateVarContext)_localctx).value = expr();
+				setState(89); match(T__7);
+				setState(90); ((CreateVarContext)_localctx).type = match(ID);
+				setState(91); match(T__9);
+				setState(92); ((CreateVarContext)_localctx).name = match(ID);
+				setState(93); match(T__10);
+				setState(94); ((CreateVarContext)_localctx).value = expr();
 				}
 				break;
 			case 5:
 				_localctx = new AssignVarContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(76); match(T__7);
-				setState(77); ((AssignVarContext)_localctx).name = match(ID);
-				setState(78); match(T__8);
-				setState(79); ((AssignVarContext)_localctx).value = expr();
+				setState(95); match(T__9);
+				setState(96); ((AssignVarContext)_localctx).name = match(ID);
+				setState(97); match(T__10);
+				setState(98); ((AssignVarContext)_localctx).value = expr();
 				}
 				break;
 			case 6:
 				_localctx = new LoadVarContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(80); match(T__7);
-				setState(81); ((LoadVarContext)_localctx).name = match(ID);
+				setState(99); match(T__9);
+				setState(100); ((LoadVarContext)_localctx).name = match(ID);
 				}
 				break;
 			}
@@ -573,41 +659,42 @@ public class Perl6Parser extends Parser {
 
 	public final MathExprContext mathExpr() throws RecognitionException {
 		MathExprContext _localctx = new MathExprContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_mathExpr);
+		enterRule(_localctx, 14, RULE_mathExpr);
 		try {
-			setState(91);
+			setState(110);
 			switch (_input.LA(1)) {
+			case T__16:
+			case T__15:
 			case T__14:
-			case T__13:
-			case T__12:
-			case T__6:
+			case T__8:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(84); temp();
+				setState(103); temp();
 				}
 				break;
+			case T__9:
 			case T__7:
-			case T__5:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(85); varExpr();
+				setState(104); varExpr();
 				}
 				break;
+			case T__6:
 			case CHARSEQUENSE:
 			case CHARSEQUENSE_2:
 			case CHARSEQUENSE_Q:
 			case NUMBER:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(86); literalExpr();
+				setState(105); literalExpr();
 				}
 				break;
-			case T__4:
+			case T__5:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(87); match(T__4);
-				setState(88); addingExpression();
-				setState(89); match(T__3);
+				setState(106); match(T__5);
+				setState(107); addingExpression();
+				setState(108); match(T__4);
 				}
 				break;
 			default:
@@ -667,31 +754,31 @@ public class Perl6Parser extends Parser {
 
 	public final MultiplyingExpressionContext multiplyingExpression() throws RecognitionException {
 		MultiplyingExpressionContext _localctx = new MultiplyingExpressionContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_multiplyingExpression);
+		enterRule(_localctx, 16, RULE_multiplyingExpression);
 		try {
 			int _alt;
-			setState(109);
-			switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
+			setState(128);
+			switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 			case 1:
 				_localctx = new MulContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(93); mathExpr();
-				setState(98);
+				setState(112); mathExpr();
+				setState(117);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,9,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,12,_ctx);
 				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
-						setState(94); match(T__2);
-						setState(95); mathExpr();
+						setState(113); match(T__3);
+						setState(114); mathExpr();
 						}
 						} 
 					}
-					setState(100);
+					setState(119);
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,9,_ctx);
+					_alt = getInterpreter().adaptivePredict(_input,12,_ctx);
 				}
 				}
 				break;
@@ -699,22 +786,22 @@ public class Perl6Parser extends Parser {
 				_localctx = new DivContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(101); mathExpr();
-				setState(106);
+				setState(120); mathExpr();
+				setState(125);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,10,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
 				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
-						setState(102); match(T__15);
-						setState(103); mathExpr();
+						setState(121); match(T__17);
+						setState(122); mathExpr();
 						}
 						} 
 					}
-					setState(108);
+					setState(127);
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,10,_ctx);
+					_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
 				}
 				}
 				break;
@@ -773,31 +860,31 @@ public class Perl6Parser extends Parser {
 
 	public final AddingExpressionContext addingExpression() throws RecognitionException {
 		AddingExpressionContext _localctx = new AddingExpressionContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_addingExpression);
+		enterRule(_localctx, 18, RULE_addingExpression);
 		try {
 			int _alt;
-			setState(127);
-			switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
+			setState(146);
+			switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
 			case 1:
 				_localctx = new AddContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(111); multiplyingExpression();
-				setState(116);
+				setState(130); multiplyingExpression();
+				setState(135);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,12,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,15,_ctx);
 				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
-						setState(112); match(T__1);
-						setState(113); multiplyingExpression();
+						setState(131); match(T__2);
+						setState(132); multiplyingExpression();
 						}
 						} 
 					}
-					setState(118);
+					setState(137);
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,12,_ctx);
+					_alt = getInterpreter().adaptivePredict(_input,15,_ctx);
 				}
 				}
 				break;
@@ -805,22 +892,22 @@ public class Perl6Parser extends Parser {
 				_localctx = new SubContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(119); multiplyingExpression();
-				setState(124);
+				setState(138); multiplyingExpression();
+				setState(143);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,16,_ctx);
 				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
-						setState(120); match(T__0);
-						setState(121); multiplyingExpression();
+						setState(139); match(T__0);
+						setState(140); multiplyingExpression();
 						}
 						} 
 					}
-					setState(126);
+					setState(145);
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
+					_alt = getInterpreter().adaptivePredict(_input,16,_ctx);
 				}
 				}
 				break;
@@ -838,8 +925,8 @@ public class Perl6Parser extends Parser {
 	}
 
 	public static class BlockContext extends ParserRuleContext {
-		public Expr_listContext expr_list() {
-			return getRuleContext(Expr_listContext.class,0);
+		public Stmt_listContext stmt_list() {
+			return getRuleContext(Stmt_listContext.class,0);
 		}
 		public BlockContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -854,13 +941,13 @@ public class Perl6Parser extends Parser {
 
 	public final BlockContext block() throws RecognitionException {
 		BlockContext _localctx = new BlockContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_block);
+		enterRule(_localctx, 20, RULE_block);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(129); match(T__12);
-			setState(130); expr_list();
-			setState(131); match(T__9);
+			setState(148); match(T__14);
+			setState(149); stmt_list();
+			setState(150); match(T__11);
 			}
 		}
 		catch (RecognitionException re) {
@@ -875,42 +962,50 @@ public class Perl6Parser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\31\u0088\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\33\u009b\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
-		"\t\13\3\2\3\2\3\2\3\3\3\3\3\3\7\3\35\n\3\f\3\16\3 \13\3\3\4\3\4\3\4\3"+
-		"\4\5\4&\n\4\3\5\3\5\5\5*\n\5\3\5\3\5\5\5.\n\5\3\5\3\5\3\5\5\5\63\n\5\3"+
-		"\6\3\6\3\6\3\6\5\69\n\6\5\6;\n\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3"+
-		"\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7U\n\7\3"+
-		"\b\3\b\3\b\3\b\3\b\3\b\3\b\5\b^\n\b\3\t\3\t\3\t\7\tc\n\t\f\t\16\tf\13"+
-		"\t\3\t\3\t\3\t\7\tk\n\t\f\t\16\tn\13\t\5\tp\n\t\3\n\3\n\3\n\7\nu\n\n\f"+
-		"\n\16\nx\13\n\3\n\3\n\3\n\7\n}\n\n\f\n\16\n\u0080\13\n\5\n\u0082\n\n\3"+
-		"\13\3\13\3\13\3\13\3\13\2\2\f\2\4\6\b\n\f\16\20\22\24\2\3\4\2\5\5\f\f"+
-		"\u0096\2\26\3\2\2\2\4\36\3\2\2\2\6%\3\2\2\2\b\62\3\2\2\2\n:\3\2\2\2\f"+
-		"T\3\2\2\2\16]\3\2\2\2\20o\3\2\2\2\22\u0081\3\2\2\2\24\u0083\3\2\2\2\26"+
-		"\27\5\4\3\2\27\30\7\2\2\3\30\3\3\2\2\2\31\32\5\6\4\2\32\33\7\b\2\2\33"+
-		"\35\3\2\2\2\34\31\3\2\2\2\35 \3\2\2\2\36\34\3\2\2\2\36\37\3\2\2\2\37\5"+
-		"\3\2\2\2 \36\3\2\2\2!&\5\b\5\2\"&\5\f\7\2#&\5\n\6\2$&\5\22\n\2%!\3\2\2"+
-		"\2%\"\3\2\2\2%#\3\2\2\2%$\3\2\2\2&\7\3\2\2\2\')\t\2\2\2(*\7\16\2\2)(\3"+
-		"\2\2\2)*\3\2\2\2*+\3\2\2\2+-\5\6\4\2,.\7\17\2\2-,\3\2\2\2-.\3\2\2\2.\63"+
-		"\3\2\2\2/\63\5\24\13\2\60\61\7\4\2\2\61\63\7\7\2\2\62\'\3\2\2\2\62/\3"+
-		"\2\2\2\62\60\3\2\2\2\63\t\3\2\2\2\64;\7\26\2\2\659\7\23\2\2\669\7\25\2"+
-		"\2\679\7\24\2\28\65\3\2\2\28\66\3\2\2\28\67\3\2\2\29;\3\2\2\2:\64\3\2"+
-		"\2\2:8\3\2\2\2;\13\3\2\2\2<=\7\r\2\2=>\7\13\2\2>U\7\27\2\2?@\7\r\2\2@"+
-		"A\7\13\2\2AB\7\27\2\2BC\7\n\2\2CU\5\6\4\2DE\7\r\2\2EF\7\27\2\2FG\7\13"+
-		"\2\2GU\7\27\2\2HI\7\r\2\2IJ\7\27\2\2JK\7\13\2\2KL\7\27\2\2LM\7\n\2\2M"+
-		"U\5\6\4\2NO\7\13\2\2OP\7\27\2\2PQ\7\n\2\2QU\5\6\4\2RS\7\13\2\2SU\7\27"+
-		"\2\2T<\3\2\2\2T?\3\2\2\2TD\3\2\2\2TH\3\2\2\2TN\3\2\2\2TR\3\2\2\2U\r\3"+
-		"\2\2\2V^\5\b\5\2W^\5\f\7\2X^\5\n\6\2YZ\7\16\2\2Z[\5\22\n\2[\\\7\17\2\2"+
-		"\\^\3\2\2\2]V\3\2\2\2]W\3\2\2\2]X\3\2\2\2]Y\3\2\2\2^\17\3\2\2\2_d\5\16"+
-		"\b\2`a\7\20\2\2ac\5\16\b\2b`\3\2\2\2cf\3\2\2\2db\3\2\2\2de\3\2\2\2ep\3"+
-		"\2\2\2fd\3\2\2\2gl\5\16\b\2hi\7\3\2\2ik\5\16\b\2jh\3\2\2\2kn\3\2\2\2l"+
-		"j\3\2\2\2lm\3\2\2\2mp\3\2\2\2nl\3\2\2\2o_\3\2\2\2og\3\2\2\2p\21\3\2\2"+
-		"\2qv\5\20\t\2rs\7\21\2\2su\5\20\t\2tr\3\2\2\2ux\3\2\2\2vt\3\2\2\2vw\3"+
-		"\2\2\2w\u0082\3\2\2\2xv\3\2\2\2y~\5\20\t\2z{\7\22\2\2{}\5\20\t\2|z\3\2"+
-		"\2\2}\u0080\3\2\2\2~|\3\2\2\2~\177\3\2\2\2\177\u0082\3\2\2\2\u0080~\3"+
-		"\2\2\2\u0081q\3\2\2\2\u0081y\3\2\2\2\u0082\23\3\2\2\2\u0083\u0084\7\6"+
-		"\2\2\u0084\u0085\5\4\3\2\u0085\u0086\7\t\2\2\u0086\25\3\2\2\2\21\36%)"+
-		"-\628:T]dlov~\u0081";
+		"\t\13\4\f\t\f\3\2\3\2\3\2\3\3\7\3\35\n\3\f\3\16\3 \13\3\3\4\3\4\3\4\3"+
+		"\4\5\4&\n\4\3\5\3\5\3\5\3\5\5\5,\n\5\3\6\3\6\5\6\60\n\6\3\6\3\6\3\6\7"+
+		"\6\65\n\6\f\6\16\68\13\6\3\6\5\6;\n\6\3\6\3\6\3\6\3\6\5\6A\n\6\3\7\3\7"+
+		"\3\7\3\7\5\7G\n\7\3\7\3\7\3\7\5\7L\n\7\5\7N\n\7\3\b\3\b\3\b\3\b\3\b\3"+
+		"\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b"+
+		"\3\b\5\bh\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tq\n\t\3\n\3\n\3\n\7\nv\n"+
+		"\n\f\n\16\ny\13\n\3\n\3\n\3\n\7\n~\n\n\f\n\16\n\u0081\13\n\5\n\u0083\n"+
+		"\n\3\13\3\13\3\13\7\13\u0088\n\13\f\13\16\13\u008b\13\13\3\13\3\13\3\13"+
+		"\7\13\u0090\n\13\f\13\16\13\u0093\13\13\5\13\u0095\n\13\3\f\3\f\3\f\3"+
+		"\f\3\f\2\2\r\2\4\6\b\n\f\16\20\22\24\26\2\3\4\2\5\5\f\f\u00ab\2\30\3\2"+
+		"\2\2\4\36\3\2\2\2\6%\3\2\2\2\b+\3\2\2\2\n@\3\2\2\2\fM\3\2\2\2\16g\3\2"+
+		"\2\2\20p\3\2\2\2\22\u0082\3\2\2\2\24\u0094\3\2\2\2\26\u0096\3\2\2\2\30"+
+		"\31\5\4\3\2\31\32\7\2\2\3\32\3\3\2\2\2\33\35\5\6\4\2\34\33\3\2\2\2\35"+
+		" \3\2\2\2\36\34\3\2\2\2\36\37\3\2\2\2\37\5\3\2\2\2 \36\3\2\2\2!\"\5\b"+
+		"\5\2\"#\7\b\2\2#&\3\2\2\2$&\5\b\5\2%!\3\2\2\2%$\3\2\2\2&\7\3\2\2\2\',"+
+		"\5\n\6\2(,\5\16\b\2),\5\f\7\2*,\5\24\13\2+\'\3\2\2\2+(\3\2\2\2+)\3\2\2"+
+		"\2+*\3\2\2\2,\t\3\2\2\2-/\t\2\2\2.\60\7\17\2\2/.\3\2\2\2/\60\3\2\2\2\60"+
+		"\61\3\2\2\2\61\66\5\b\5\2\62\63\7\23\2\2\63\65\5\b\5\2\64\62\3\2\2\2\65"+
+		"8\3\2\2\2\66\64\3\2\2\2\66\67\3\2\2\2\67:\3\2\2\28\66\3\2\2\29;\7\20\2"+
+		"\2:9\3\2\2\2:;\3\2\2\2;A\3\2\2\2<A\5\26\f\2=>\7\4\2\2>?\7\7\2\2?A\7\b"+
+		"\2\2@-\3\2\2\2@<\3\2\2\2@=\3\2\2\2A\13\3\2\2\2BC\7\16\2\2CD\7\30\2\2D"+
+		"G\7\16\2\2EG\7\30\2\2FB\3\2\2\2FE\3\2\2\2GN\3\2\2\2HL\7\25\2\2IL\7\27"+
+		"\2\2JL\7\26\2\2KH\3\2\2\2KI\3\2\2\2KJ\3\2\2\2LN\3\2\2\2MF\3\2\2\2MK\3"+
+		"\2\2\2N\r\3\2\2\2OP\7\r\2\2PQ\7\13\2\2Qh\7\31\2\2RS\7\r\2\2ST\7\13\2\2"+
+		"TU\7\31\2\2UV\7\n\2\2Vh\5\b\5\2WX\7\r\2\2XY\7\31\2\2YZ\7\13\2\2Zh\7\31"+
+		"\2\2[\\\7\r\2\2\\]\7\31\2\2]^\7\13\2\2^_\7\31\2\2_`\7\n\2\2`h\5\b\5\2"+
+		"ab\7\13\2\2bc\7\31\2\2cd\7\n\2\2dh\5\b\5\2ef\7\13\2\2fh\7\31\2\2gO\3\2"+
+		"\2\2gR\3\2\2\2gW\3\2\2\2g[\3\2\2\2ga\3\2\2\2ge\3\2\2\2h\17\3\2\2\2iq\5"+
+		"\n\6\2jq\5\16\b\2kq\5\f\7\2lm\7\17\2\2mn\5\24\13\2no\7\20\2\2oq\3\2\2"+
+		"\2pi\3\2\2\2pj\3\2\2\2pk\3\2\2\2pl\3\2\2\2q\21\3\2\2\2rw\5\20\t\2st\7"+
+		"\21\2\2tv\5\20\t\2us\3\2\2\2vy\3\2\2\2wu\3\2\2\2wx\3\2\2\2x\u0083\3\2"+
+		"\2\2yw\3\2\2\2z\177\5\20\t\2{|\7\3\2\2|~\5\20\t\2}{\3\2\2\2~\u0081\3\2"+
+		"\2\2\177}\3\2\2\2\177\u0080\3\2\2\2\u0080\u0083\3\2\2\2\u0081\177\3\2"+
+		"\2\2\u0082r\3\2\2\2\u0082z\3\2\2\2\u0083\23\3\2\2\2\u0084\u0089\5\22\n"+
+		"\2\u0085\u0086\7\22\2\2\u0086\u0088\5\22\n\2\u0087\u0085\3\2\2\2\u0088"+
+		"\u008b\3\2\2\2\u0089\u0087\3\2\2\2\u0089\u008a\3\2\2\2\u008a\u0095\3\2"+
+		"\2\2\u008b\u0089\3\2\2\2\u008c\u0091\5\22\n\2\u008d\u008e\7\24\2\2\u008e"+
+		"\u0090\5\22\n\2\u008f\u008d\3\2\2\2\u0090\u0093\3\2\2\2\u0091\u008f\3"+
+		"\2\2\2\u0091\u0092\3\2\2\2\u0092\u0095\3\2\2\2\u0093\u0091\3\2\2\2\u0094"+
+		"\u0084\3\2\2\2\u0094\u008c\3\2\2\2\u0095\25\3\2\2\2\u0096\u0097\7\6\2"+
+		"\2\u0097\u0098\5\4\3\2\u0098\u0099\7\t\2\2\u0099\27\3\2\2\2\24\36%+/\66"+
+		":@FKMgpw\177\u0082\u0089\u0091\u0094";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

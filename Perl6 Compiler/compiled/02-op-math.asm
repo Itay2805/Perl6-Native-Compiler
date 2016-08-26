@@ -4,13 +4,13 @@
 main:
 	push rbp
 	mov rbp, rsp
-	sub rsp, 8
-	mov rax, generated_string_7
+	sub rsp, 0
+	mov rax, generated_string_17
 	lea rsi, [rax + 8]
 	mov rdi, str_fmt_line
 	xor ax, ax
 	call printf
-	mov rax, generated_string_8
+	mov rax, generated_string_18
 	lea rsi, [rax + 8]
 	mov rdi, str_fmt
 	xor ax, ax
@@ -25,7 +25,7 @@ main:
 	mov rdi, num_fmt_line
 	xor ax, ax
 	call printf
-	mov rax, generated_string_9
+	mov rax, generated_string_19
 	lea rsi, [rax + 8]
 	mov rdi, str_fmt
 	xor ax, ax
@@ -40,7 +40,7 @@ main:
 	mov rdi, num_fmt_line
 	xor ax, ax
 	call printf
-	mov rax, generated_string_10
+	mov rax, generated_string_20
 	lea rsi, [rax + 8]
 	mov rdi, str_fmt
 	xor ax, ax
@@ -55,7 +55,7 @@ main:
 	mov rdi, num_fmt_line
 	xor ax, ax
 	call printf
-	mov rax, generated_string_11
+	mov rax, generated_string_21
 	lea rsi, [rax + 8]
 	mov rdi, str_fmt
 	xor ax, ax
@@ -83,6 +83,27 @@ num_fmt:
 	db "%d", 0
 str_fmt:
 	db "%s", 0
+generated_string_19:
+	dq 3
+	db "ok ", 0
+generated_string_18:
+	dq 3
+	db "ok ", 0
+generated_string_17:
+	dq 4
+	db "1..4", 0
+generated_string_16:
+	dq 3
+	db "ok ", 0
+generated_string_15:
+	dq 3
+	db "ok ", 0
+generated_string_14:
+	dq 3
+	db "ok ", 0
+generated_string_13:
+	dq 3
+	db "ok ", 0
 generated_string_8:
 	dq 3
 	db "ok ", 0
@@ -93,11 +114,14 @@ generated_string_6:
 	dq 4
 	db "ok 5", 0
 generated_string_7:
-	dq 4
-	db "1..4", 0
+	dq 3
+	db "ok ", 0
 generated_string_0:
-	dq 4
-	db "1..5", 0
+	dq 5
+	db "1..17", 0
+generated_string_12:
+	dq 3
+	db "ok ", 0
 generated_string_1:
 	dq 3
 	db "ok ", 0
@@ -105,6 +129,12 @@ generated_string_11:
 	dq 3
 	db "ok ", 0
 generated_string_10:
+	dq 3
+	db "ok ", 0
+generated_string_21:
+	dq 3
+	db "ok ", 0
+generated_string_20:
 	dq 3
 	db "ok ", 0
 generated_string_4:
