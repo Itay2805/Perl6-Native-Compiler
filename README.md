@@ -1,5 +1,8 @@
 # Perl6 Native Compiler
 
+***NOTE***
+The Project is on hold! I am not going to continue it as of right now... Instead I am working on NQP native compiler!
+
 This is a work in progress Compiler to compile Perl6 into Assembly code. Right now it is lacking allot of stuff  but I hope in the future we can compile the whole language (including all of the built in classes)!
 
 ## How to use:
